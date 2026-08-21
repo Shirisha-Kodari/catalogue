@@ -80,45 +80,45 @@ def config(Map configMap){
         
             }
 
-            stage('Check Dependabot Alerts') {
-                environment {
-                    GITHUB_TOKEN = credentials('github-token')
-                }
-                steps {
-                    script {
+            // stage('Check Dependabot Alerts') {
+            //     environment {
+            //         GITHUB_TOKEN = credentials('github-token')
+            //     }
+            //     steps {
+            //         script {
 
-                        def response = sh(
-                            script: '''
-                                curl -s \
-                                -H "Accept: application/vnd.github+json" \
-                                -H "Authorization: Bearer $GITHUB_TOKEN" \
-                                https://api.github.com/repos/Shirisha-Kodari/catalogue/dependabot/alerts
-                            ''',
-                            returnStdout: true
-                        ).trim()
+            //             def response = sh(
+            //                 script: '''
+            //                     curl -s \
+            //                     -H "Accept: application/vnd.github+json" \
+            //                     -H "Authorization: Bearer $GITHUB_TOKEN" \
+            //                     https://api.github.com/repos/Shirisha-Kodari/catalogue/dependabot/alerts
+            //                 ''',
+            //                 returnStdout: true
+            //             ).trim()
 
-                        def alerts = readJSON text: response
+            //             def alerts = readJSON text: response
 
-                        echo "Total Dependabot alerts: ${alerts.size()}"
+            //             echo "Total Dependabot alerts: ${alerts.size()}"
 
-                        def highOrCriticalAlerts = alerts.findAll { alert ->
-                            def severity = alert?.security_vulnerability?.severity?.toLowerCase()
-                            def state = alert?.state?.toLowerCase()
+            //             def highOrCriticalAlerts = alerts.findAll { alert ->
+            //                 def severity = alert?.security_vulnerability?.severity?.toLowerCase()
+            //                 def state = alert?.state?.toLowerCase()
 
-                            state == 'open' &&
-                            severity in ['high', 'critical']
-                        }
+            //                 state == 'open' &&
+            //                 severity in ['high', 'critical']
+            //             }
 
-                        echo "High/Critical alerts: ${highOrCriticalAlerts.size()}"
+            //             echo "High/Critical alerts: ${highOrCriticalAlerts.size()}"
 
-                        if (highOrCriticalAlerts.size() > 0) {
-                            error("High/Critical Dependabot vulnerabilities found!")
-                        } else {
-                            echo "No HIGH/CRITICAL Dependabot vulnerabilities found."
-                        }
-                    }
-                }
-            }
+            //             if (highOrCriticalAlerts.size() > 0) {
+            //                 error("High/Critical Dependabot vulnerabilities found!")
+            //             } else {
+            //                 echo "No HIGH/CRITICAL Dependabot vulnerabilities found."
+            //             }
+            //         }
+            //     }
+            // }
 
 
 
