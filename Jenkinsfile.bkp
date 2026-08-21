@@ -119,6 +119,9 @@ def config(Map configMap){
                     }
                 }
             }
+
+
+
             // stage('Check Dependabot Alerts') {
             //     environment { 
             //         GITHUB_TOKEN = credentials('github-token')
@@ -145,9 +148,9 @@ def config(Map configMap){
 
                         // echo "High/Critical Dependabot Alerts: ${highCriticalAlerts.size()}"
 
-                        if (highCriticalAlerts.size() > 0) {
-                            error("High/Critical Dependabot vulnerabilities found!")
-                        }
+                        // if (highCriticalAlerts.size() > 0) {
+                        //     error("High/Critical Dependabot vulnerabilities found!")
+                        // }
                         // Fetch alerts from GitHub
                         // def response = sh(
                         //     script: """
