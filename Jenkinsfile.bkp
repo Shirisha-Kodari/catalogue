@@ -176,9 +176,9 @@ def config(Map configMap){
                         // } else {
                         //     echo "✅ No HIGH/CRITICAL Dependabot alerts found."
                         // }
-                    }
-                }
-            }                     
+            //         }
+            //     }
+            // }                     
             stage('docker build') {
                 steps { 
                     script {
