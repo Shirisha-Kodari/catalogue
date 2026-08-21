@@ -79,29 +79,70 @@ def config(Map configMap){
                 }
         
             }
+
             stage('Check Dependabot Alerts') {
-                environment { 
+                environment {
                     GITHUB_TOKEN = credentials('github-token')
                 }
                 steps {
                     script {
+
                         def response = sh(
                             script: '''
                                 curl -s \
                                 -H "Accept: application/vnd.github+json" \
                                 -H "Authorization: Bearer $GITHUB_TOKEN" \
-                                https://api.github.com/repos/Shirisha-Kodari/catalogue/dependabot/alerts
+                                -H "X-GitHub-Api-Version: 2026-03-10" \
+                                "https://api.github.com/repos/Shirisha-Kodari/catalogue/dependabot/alerts"
                             ''',
                             returnStdout: true
                         ).trim()
 
                         def alerts = readJSON text: response
 
-                        def highCriticalAlerts = alerts.findAll { alert ->
-                            alert.security_advisory?.severity in ['high', 'critical']
+                        def highOrCriticalAlerts = alerts.findAll { alert ->
+                            def severity = alert['security_vulnerability']?.get('severity')
+                            def state = alert['state']?.toLowerCase()
+
+                            state == 'open' && severity in ['high', 'critical']
                         }
 
-                        echo "High/Critical Dependabot Alerts: ${highCriticalAlerts.size()}"
+                        echo "Total Dependabot alerts: ${alerts.size()}"
+                        echo "Open High/Critical alerts: ${highOrCriticalAlerts.size()}"
+
+                        if (highOrCriticalAlerts.size() > 0) {
+                            error("High/Critical Dependabot vulnerabilities found!")
+                        } else {
+                            echo "No High/Critical Dependabot vulnerabilities found."
+                        }
+                    }
+                }
+            }
+            // stage('Check Dependabot Alerts') {
+            //     environment { 
+            //         GITHUB_TOKEN = credentials('github-token')
+            //     }
+            //     steps {
+            //         script {
+            //             def response = sh(
+            //                 script: '''
+            //                     curl -s \
+            //                     -H "Accept: application/vnd.github+json" \
+            //                     -H "Authorization: Bearer $GITHUB_TOKEN" \
+            //                     https://api.github.com/repos/Shirisha-Kodari/catalogue/dependabot/alerts
+            //                 ''',
+            //                 returnStdout: true
+            //             ).trim()
+
+                      
+
+                        // def alerts = readJSON text: response
+
+                        // def highCriticalAlerts = alerts.findAll { alert ->
+                        //     alert.security_advisory?.severity in ['high', 'critical']
+                        // }
+
+                        // echo "High/Critical Dependabot Alerts: ${highCriticalAlerts.size()}"
 
                         if (highCriticalAlerts.size() > 0) {
                             error("High/Critical Dependabot vulnerabilities found!")
