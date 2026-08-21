@@ -56,29 +56,29 @@ def config(Map configMap){
                     }
                 }
             } 
-            // stage('Sonar scan') { 
-            //     environment {
-            //         scannerHome = tool 'sonar-7.2'
-            //     }          
-            //     steps {
-            //         script {
-            //             // sonar server environment
-            //             withSonarQubeEnv(installationName:'sonar-7.2') { // ID configured in Configure System
-            //                  sh "${scannerHome}/bin/sonar-scanner"
+            stage('Sonar scan') { 
+                environment {
+                    scannerHome = tool 'sonar-7.2'
+                }          
+                steps {
+                    script {
+                        // sonar server environment
+                        withSonarQubeEnv(installationName:'sonar-7.2') { // ID configured in Configure System
+                             sh "${scannerHome}/bin/sonar-scanner"
 
-            //             }
-            //         }
-            //     }
+                        }
+                    }
+                }
 
-            // } 
-            // enable webhook in sonarqube server and wait for results
-            // stage ("Quality Gate") {
-            //     steps {
-            //         timeout(time: 1, unit: 'HOURS') {
-            //         waitForQualityGate abortPipeline: true }
-            //     }
+            } 
+            enable webhook in sonarqube server and wait for results
+            stage ("Quality Gate") {
+                steps {
+                    timeout(time: 1, unit: 'HOURS') {
+                    waitForQualityGate abortPipeline: true }
+                }
         
-            // }
+            }
             stage('Check Dependabot Alerts') {
                 environment { 
                     GITHUB_TOKEN = credentials('github-token')
