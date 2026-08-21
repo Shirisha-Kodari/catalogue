@@ -7,7 +7,7 @@ def config(Map configMap){
         environment {
             appVersion = ''
             REGION = "us-east-1"
-            ACC_ID = "642314346143"
+            ACC_ID = "547520640015"
             PROJECT = "roboshop"
             COMPONENT = "catalogue"
             //COURSE = 'jenkins'
@@ -55,7 +55,7 @@ def config(Map configMap){
 
                     }
                 }
-            }
+            } 
             // stage('Sonar scan') { 
             //     environment {
             //         scannerHome = tool 'sonar-7.2'
@@ -131,7 +131,7 @@ def config(Map configMap){
             stage('Check Scan Results') {
                 steps {
                     script {
-                        withAWS(credentials: 'devops', region: 'us-east-1') {
+                        withAWS(credentials: 'tripare-user', region: 'us-east-1') {
                         // Fetch scan findings
                             def findings = sh(
                                 script: """
@@ -165,7 +165,7 @@ def config(Map configMap){
         // if size is 0 failed the build 
             stage('trigger deploy') {
                 when {
-                    expression { params.delpoy }
+                    expression { params.deploy }
                 }
                 steps {
                     script {
